@@ -2,6 +2,7 @@ $ ->
     $(window).on "load",()->
         $("body").append """
         <div style="
+            width:400px;
             z-index:99999;
             position:fixed;
             top:20px;right:20px;
@@ -17,10 +18,13 @@ $ ->
         """
 
         page_ids_list=JSON.parse(localStorage.getItem("page_ids_list"))
+        page_ids_list_no = JSON.parse(localStorage.getItem("page_ids_list_no"))
         page_ids_num =localStorage.getItem("page_ids_num")
         page_ids_run = localStorage.getItem("page_ids_run")
         if page_ids_list == null
             page_ids_list = []
+        if page_ids_list_no == null
+            page_ids_list_no = []
         if page_ids_num == null
             page_ids_num = 0
         else
@@ -43,7 +47,12 @@ $ ->
                         localStorage.setItem("page_ids_list",JSON.stringify([]))
                         localStorage.setItem("page_ids_num",0)
                         localStorage.setItem("page_ids_run","false")
-                    $("#InitCartUrl")[0].click()
+                    if $("#InitCartUrl").attr("href") == "#none"
+                        page_ids_list_no.push page_ids_list[page_ids_num-1]
+                        localStorage.setItem("page_ids_list_no",JSON.stringify(page_ids_list_no))
+                        window.location.href = "https://item.jd.com/#{page_ids_list[page_ids_num]}.html"
+                    else
+                        $("#InitCartUrl")[0].click()
         
         $("body").on "click",".action_continue",(evt)->
             localStorage.setItem("page_ids_run","true")
@@ -53,6 +62,7 @@ $ ->
             page_ids_list = $(".page_ids").val().split(",")
             page_ids_num = 0
             localStorage.setItem("page_ids_list",JSON.stringify(page_ids_list))
+            localStorage.setItem("page_ids_list_no",JSON.stringify([]))
             localStorage.setItem("page_ids_num",page_ids_num)
             localStorage.setItem("page_ids_run","true")
         $("body").on "click",".action_run",(evt)->
